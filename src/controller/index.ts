@@ -9,7 +9,7 @@ import validation from "../middeware/validation/validation.ts";
 import { EmployeeSchema, EmployeeSchemaPartial } from "../middeware/validation/schemas.ts";
 import {   getRandomEmployees } from "../utils/service-helpers.ts";
 import accountingService from "../service/AccountingServiceMap.ts";
-import { authenticate, requireAdmin, requireAuth, AuthenticatedRequest } from "../middeware/auth/auth.ts";
+import { auth, admin, AuthenticatedRequest } from "../middeware/auth/auth.ts";
 
 const { PORT, MORGAN_FORMAT, SKIP_CODE_THRESHOLD } = process.env;
 const port = PORT || 3500;
@@ -27,22 +27,22 @@ app.use(
   })
 );
 
-app.get("/employees", authenticate, requireAuth, (req: AuthenticatedRequest, res) => {
+app.get("/employees", auth, (req: AuthenticatedRequest, res) => {
   res.json(service.getAll(req.query.department as string));
 });
 
-app.post("/employees", authenticate, requireAdmin, validation(EmployeeSchema), (req: AuthenticatedRequest, res) => {
+app.post("/employees", auth, admin, validation(EmployeeSchema), (req: AuthenticatedRequest, res) => {
   res.json(service.addEmployee(req.body as Employee));
 });
 
-app.delete("/employees/:id", authenticate, requireAdmin, (req: AuthenticatedRequest, res) => {
+app.delete("/employees/:id", auth, admin, (req: AuthenticatedRequest, res) => {
   res.json(service.deleteEmployee(req.params.id));
 });
 
 app.patch(
   "/employees/:id",
-  authenticate,
-  requireAdmin,
+  auth,
+  admin,
   validation(EmployeeSchemaPartial),
   (req: AuthenticatedRequest, res) => {
     res.json(service.updateEmployee(req.params.id, req.body));

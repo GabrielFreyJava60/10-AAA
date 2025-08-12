@@ -14,20 +14,11 @@ export const errorsHandler = (
 ) => {
   let status = 400;
   
-  if (error instanceof EmployeeAlreadyExistsError) {
-    status = 409;
-  } else if (error instanceof EmployeeNotFoundError) {
-    status = 404;
-  } else if (error.message === "No token provided" || error.message === "Invalid token") {
-    status = 401;
-  } else if (error.message === "Admin role required") {
-    status = 403;
-  } else if (error.message === "Authentication required") {
-    status = 401;
-  }
+  if (error instanceof EmployeeAlreadyExistsError) status = 409;
+  else if (error instanceof EmployeeNotFoundError) status = 404;
+  else if (error.message === "No token" || error.message === "Invalid token") status = 401;
+  else if (error.message === "Admin only") status = 403;
   
-  const message =
-    error instanceof ZodError ? getZodMessage(error) : error.message;
-  
+  const message = error instanceof ZodError ? getZodMessage(error) : error.message;
   res.status(status).json({ error: message });
 };
