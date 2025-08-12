@@ -9,7 +9,7 @@ import validation from "../middeware/validation/validation.ts";
 import { EmployeeSchema, EmployeeSchemaPartial } from "../middeware/validation/schemas.ts";
 import {   getRandomEmployees } from "../utils/service-helpers.ts";
 import accountingService from "../service/AccountingServiceMap.ts";
-import { auth, admin, AuthenticatedRequest } from "../middeware/auth/auth.ts";
+import { auth, user, admin, AuthenticatedRequest } from "../middeware/auth/auth.ts";
 
 const { PORT, MORGAN_FORMAT, SKIP_CODE_THRESHOLD } = process.env;
 const port = PORT || 3500;
@@ -27,7 +27,7 @@ app.use(
   })
 );
 
-app.get("/employees", auth, (req: AuthenticatedRequest, res) => {
+app.get("/employees", auth, user, (req: AuthenticatedRequest, res) => {
   res.json(service.getAll(req.query.department as string));
 });
 

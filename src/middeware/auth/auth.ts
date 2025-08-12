@@ -22,6 +22,14 @@ export function auth(req: AuthenticatedRequest, res: Response, next: NextFunctio
   }
 }
 
+export function user(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
+  if (req.role !== "ADMIN" && req.role !== "USER") {
+    res.status(403).json({ error: "Access denied" });
+    return;
+  }
+  next();
+}
+
 export function admin(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
   if (req.role !== "ADMIN") {
     res.status(403).json({ error: "Admin only" });

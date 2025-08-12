@@ -17,7 +17,7 @@ export const errorsHandler = (
   if (error instanceof EmployeeAlreadyExistsError) status = 409;
   else if (error instanceof EmployeeNotFoundError) status = 404;
   else if (error.message === "No token" || error.message === "Invalid token") status = 401;
-  else if (error.message === "Admin only") status = 403;
+  else if (error.message === "Admin only" || error.message === "Access denied") status = 403;
   
   const message = error instanceof ZodError ? getZodMessage(error) : error.message;
   res.status(status).json({ error: message });
